@@ -68,7 +68,11 @@ class Combat:
                 print("\nYour turn!")
                 print("1. Attack")
                 print("2. Run away")
+
                 choice = input("What do you do? ")
+                while choice not in ("1", "2"):
+                    print("Invalid choice. Please enter 1 or 2.")
+                    choice = input("What do you do? ")
 
                 if choice == "2":
                     return "fled"

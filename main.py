@@ -3,6 +3,15 @@ from dndgame.enemy import Enemy
 from dndgame.combat import Combat
 
 
+def get_valid_choice(prompt: str, valid_options: list[str]) -> str:
+    """Repeatedly prompt until the user enters one of valid_options."""
+    while True:
+        choice = input(prompt)
+        if choice in valid_options:
+            return choice
+        print(f"Invalid choice. Please enter one of: {', '.join(valid_options)}")
+
+
 def create_character():
     print("Welcome to D&D Adventure!")
     name = input("Enter your character's name: ")
@@ -12,7 +21,7 @@ def create_character():
     print("2. Elf (+2 DEX)")
     print("3. Dwarf (+2 CON)")
     print("4. Orc (+2 STR)")
-    race_choice = input("Enter choice (1-4): ")
+    race_choice = get_valid_choice("Enter choice (1-4): ", ["1", "2", "3", "4"])
     print("\n")
     race = ["Human", "Elf", "Dwarf", "Orc"][int(race_choice) - 1]
 
@@ -40,7 +49,7 @@ def main():
         print("2. View character")
         print("3. Quit")
 
-        choice = input("Enter choice (1-3): ")
+        choice = get_valid_choice("Enter choice (1-3): ", ["1", "2", "3"])
 
         if choice == "1":
             goblin = Enemy("Goblin", 5)
