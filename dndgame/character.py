@@ -2,6 +2,14 @@ from dndgame.dice import roll
 from dndgame.entity import Entity
 
 
+RACIAL_BONUSES = {
+    "Human": {"STR": 1, "DEX": 1, "CON": 1, "INT": 1, "WIS": 1, "CHA": 1},
+    "Elf": {"DEX": 2},
+    "Dwarf": {"CON": 2},
+    "Orc": {"STR": 2},  # example new race, added with zero new code logic
+}
+
+
 class Character(Entity):
     def __init__(self, name, race, base_hp, level=1):
         super().__init__(name, base_hp)
@@ -19,10 +27,6 @@ class Character(Entity):
         self.hp = self.max_hp
 
     def apply_racial_bonuses(self):
-        if self.race == "Dwarf":
-            self.stats["CON"] += 2
-        elif self.race == "Elf":
-            self.stats["DEX"] += 2
-        elif self.race == "Human":
-            for stat in self.stats:
-                self.stats[stat] += 1
+        bonuses = RACIAL_BONUSES.get(self.race, {})
+        for stat, bonus in bonuses.items():
+            self.stats[stat] += bonus

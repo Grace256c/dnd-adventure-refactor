@@ -11,9 +11,10 @@ def create_character():
     print("1. Human (+1 to all stats)")
     print("2. Elf (+2 DEX)")
     print("3. Dwarf (+2 CON)")
-    race_choice = input("Enter choice (1-3): ")
+    print("4. Orc (+2 STR)")
+    race_choice = input("Enter choice (1-4): ")
     print("\n")
-    race = ["Human", "Elf", "Dwarf"][int(race_choice) - 1]
+    race = ["Human", "Elf", "Dwarf", "Orc"][int(race_choice) - 1]
 
     character = Character(name, race, 10)
     character.roll_stats()
