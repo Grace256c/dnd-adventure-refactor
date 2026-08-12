@@ -1,5 +1,6 @@
 from dndgame.character import Character
-from dndgame.dice import roll
+from dndgame.enemy import Enemy
+from dndgame.combat import Combat
 
 
 def create_character():
@@ -29,36 +30,10 @@ def display_character(character):
     print(f"\nHP: {character.hp}")
 
 
-def simple_combat(player):
-    print("\nA goblin appears!")
-    goblin_hp = 5
-
-    while goblin_hp > 0:
-        print(f"\nGoblin HP: {goblin_hp}")
-        print("\nYour turn!")
-        print("1. Attack")
-        print("2. Run away")
-        print()
-
-        choice = input("What do you do? ")
-        if choice == "1":
-            attack = roll(20, 1)
-            if attack >= 10:
-                damage = roll(4, 1)
-                goblin_hp -= damage
-                print(f"You hit for {damage} damage!")
-            else:
-                print("You missed!")
-        elif choice == "2":
-            return False
-
-    return True
-
-
 def main():
     player = create_character()
 
-    while True:
+    while player.is_alive():
         print("\nWhat would you like to do?")
         print("1. Fight a goblin")
         print("2. View character")
@@ -67,15 +42,22 @@ def main():
         choice = input("Enter choice (1-3): ")
 
         if choice == "1":
-            victory = simple_combat(player)
-            if victory:
+            goblin = Enemy("Goblin", 5)
+            combat = Combat(player, goblin)
+            result = combat.run()
+            if result == "victory":
                 print("You defeated the goblin!")
-            else:
+            elif result == "fled":
                 print("You ran away!")
+            elif result == "defeated":
+                print("You have been defeated...")
         elif choice == "2":
             display_character(player)
         elif choice == "3":
             break
+
+    if not player.is_alive():
+        print(f"\nGame over — {player.name} has fallen.")
 
 
 if __name__ == "__main__":

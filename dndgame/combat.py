@@ -28,3 +28,45 @@ class Combat:
             defender.hp -= damage
             return damage
         return 0
+
+    def run(self):
+        """Run the full combat loop until someone dies or the player runs.
+
+        Returns:
+            str: "victory", "fled", or "defeated"
+        """
+        print(f"\nA {self.enemy.name} appears!")
+        self.roll_initiative()
+        turn = 0
+
+        while self.player.is_alive() and self.enemy.is_alive():
+            current = self.initiative_order[turn]
+
+            if current is self.player:
+                print(f"\n{self.enemy.name} HP: {self.enemy.hp}")
+                print("\nYour turn!")
+                print("1. Attack")
+                print("2. Run away")
+                choice = input("What do you do? ")
+
+                if choice == "2":
+                    return "fled"
+
+                damage = self.attack(self.player, self.enemy)
+                if damage > 0:
+                    print(f"You hit for {damage} damage!")
+                else:
+                    print("You missed!")
+            else:
+                damage = self.attack(self.enemy, self.player)
+                if damage > 0:
+                    print(f"The {self.enemy.name} hits you for {damage} damage!")
+                else:
+                    print(f"The {self.enemy.name} missed!")
+
+            turn = 1 - turn
+
+        if self.player.is_alive():
+            return "victory"
+        else:
+            return "defeated"

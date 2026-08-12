@@ -1,20 +1,12 @@
 from dndgame.dice import roll
+from dndgame.entity import Entity
 
 
-class Character:
-    def __init__(self, name, race, base_hp):
-        self.name = name
+class Character(Entity):
+    def __init__(self, name, race, base_hp, level=1):
+        super().__init__(name, base_hp)
         self.race = race
-        self.stats = {}
-        self.base_hp = base_hp
-        self.hp = 0
-        self.max_hp = 0
-        self.level = 1
-        self.armor_class = 10
-
-    def get_modifier(self, stat):
-        """Calculate ability modifier."""
-        return (self.stats[stat] - 10) // 2
+        self.level = level
 
     def roll_stats(self):
         print("Rolling stats...\n")
