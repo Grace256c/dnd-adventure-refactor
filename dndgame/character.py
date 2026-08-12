@@ -25,13 +25,16 @@ class Character(Entity):
     def roll_stats(self) -> None:
         """Roll 3d6 for each ability score, then set max_hp and hp."""
         print("Rolling stats...\n")
-        stats = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
-        for stat in stats:
-            print(f"Rolling {stat}...")
-            self.stats[stat] = roll(6, 3)
+        stat_names = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
+        self.stats = {stat: self._roll_one_stat(stat) for stat in stat_names}
 
         self.max_hp = self.base_hp + self.get_modifier("CON")
         self.hp = self.max_hp
+
+    def _roll_one_stat(self, stat: str) -> int:
+        """Roll 3d6 for a single stat, printing progress as it goes."""
+        print(f"Rolling {stat}...")
+        return roll(6, 3)
 
     def apply_racial_bonuses(self) -> None:
         """Apply this character's racial stat bonuses, based on RACIAL_BONUSES.
