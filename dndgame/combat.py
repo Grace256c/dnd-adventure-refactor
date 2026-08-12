@@ -1,15 +1,26 @@
+from typing import Literal
+
 from dndgame.dice import roll
+from dndgame.entity import Entity
+
+CombatResult = Literal["victory", "fled", "defeated"]
 
 
 class Combat:
-    def __init__(self, player, enemy):
-        self.player = player
-        self.enemy = enemy
-        self.round = 0
-        self.initiative_order = []
+    """Manages a single combat encounter between a player and an enemy."""
 
-    def roll_initiative(self):
-        """Roll initiative for combat order."""
+    def __init__(self, player: Entity, enemy: Entity) -> None:
+        self.player: Entity = player
+        self.enemy: Entity = enemy
+        self.round: int = 0
+        self.initiative_order: list[Entity] = []
+
+    def roll_initiative(self) -> list[Entity]:
+        """Roll initiative for both combatants and set the turn order.
+
+        Returns:
+            The turn order as a list of two entities, first to act first.
+        """
         player_init = roll(20, 1) + self.player.get_modifier("DEX")
         enemy_init = roll(20, 1) + self.enemy.get_modifier("DEX")
 
@@ -20,7 +31,16 @@ class Combat:
 
         return self.initiative_order
 
-    def attack(self, attacker, defender):
+    def attack(self, attacker: Entity, defender: Entity) -> int:
+        """Resolve a single attack from attacker against defender.
+
+        Args:
+            attacker: The entity making the attack.
+            defender: The entity being attacked.
+
+        Returns:
+            The damage dealt, or 0 if the attack missed.
+        """
         attack_roll = roll(20, 1) + attacker.get_modifier("STR")
         weapon_max_damage = 6
         if attack_roll >= defender.armor_class:
@@ -29,11 +49,12 @@ class Combat:
             return damage
         return 0
 
-    def run(self):
-        """Run the full combat loop until someone dies or the player runs.
+    def run(self) -> CombatResult:
+        """Run the full combat loop until someone dies or the player flees.
 
         Returns:
-            str: "victory", "fled", or "defeated"
+            "victory" if the enemy is defeated, "fled" if the player runs,
+            or "defeated" if the player is reduced to 0 HP.
         """
         print(f"\nA {self.enemy.name} appears!")
         self.roll_initiative()

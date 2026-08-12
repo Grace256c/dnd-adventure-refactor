@@ -68,14 +68,17 @@ def test_run_player_wins():
         result = combat.run()
 
     assert result == "victory"
-    def test_run_player_defeated():
+
+
+def test_run_player_defeated():
     player = make_player()
     player.hp = 1
     player.max_hp = 1
     enemy = Enemy("Goblin", 5)
     combat = Combat(player, enemy)
 
-    with patch("random.randint", return_value=20), patch("builtins.input", return_value="1"):
+    # Rolls consumed in order: player init, enemy init, enemy attack roll, enemy damage roll
+    with patch("random.randint", side_effect=[1, 20, 20, 20]):
         result = combat.run()
 
     assert result == "defeated"

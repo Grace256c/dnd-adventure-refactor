@@ -1,22 +1,29 @@
 from dndgame.dice import roll
 from dndgame.entity import Entity
 
-
-RACIAL_BONUSES = {
+RACIAL_BONUSES: dict[str, dict[str, int]] = {
     "Human": {"STR": 1, "DEX": 1, "CON": 1, "INT": 1, "WIS": 1, "CHA": 1},
     "Elf": {"DEX": 2},
     "Dwarf": {"CON": 2},
-    "Orc": {"STR": 2},  # example new race, added with zero new code logic
+    "Orc": {"STR": 2},
 }
 
 
 class Character(Entity):
-    def __init__(self, name, race, base_hp, level=1):
-        super().__init__(name, base_hp)
-        self.race = race
-        self.level = level
+    """A player-controlled character.
 
-    def roll_stats(self):
+    Attributes:
+        race: The character's race, e.g. "Human", "Elf", "Dwarf", "Orc".
+        level: The character's current level.
+    """
+
+    def __init__(self, name: str, race: str, base_hp: int, level: int = 1) -> None:
+        super().__init__(name, base_hp)
+        self.race: str = race
+        self.level: int = level
+
+    def roll_stats(self) -> None:
+        """Roll 3d6 for each ability score, then set max_hp and hp."""
         print("Rolling stats...\n")
         stats = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
         for stat in stats:
@@ -26,7 +33,16 @@ class Character(Entity):
         self.max_hp = self.base_hp + self.get_modifier("CON")
         self.hp = self.max_hp
 
-    def apply_racial_bonuses(self):
+    def apply_racial_bonuses(self) -> None:
+        """Apply this character's racial stat bonuses, based on RACIAL_BONUSES.
+
+        Example:
+            >>> c = Character("Aria", "Elf", 10)
+            >>> c.stats = {"DEX": 10}
+            >>> c.apply_racial_bonuses()
+            >>> c.stats["DEX"]
+            12
+        """
         bonuses = RACIAL_BONUSES.get(self.race, {})
         for stat, bonus in bonuses.items():
             self.stats[stat] += bonus
